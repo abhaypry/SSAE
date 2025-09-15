@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetId = link.getAttribute('href').substring(1);
             const targetSection = document.getElementById(targetId);
             if (targetSection) {
-                // Adjusting the scroll position to account for the fixed header
                 window.scrollTo({
                     top: targetSection.offsetTop - 100,
                     behavior: 'smooth'
@@ -17,24 +16,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- Product Enquiry via WhatsApp ---
+    const enquiryButtons = document.querySelectorAll('.enquiry-btn');
+    const phoneNumber = '919724484495'; // The business WhatsApp number
+
+    enquiryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const productName = button.dataset.productName;
+            const productImage = button.dataset.productImage;
+            const fullImageUrl = window.location.origin + '/' + productImage;
+
+            const message = encodeURIComponent(`Hello, I would like to enquire about this product:\n\n*Product Name:* ${productName}\n*Product Photo:* ${fullImageUrl}`);
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+
+            window.open(whatsappUrl, '_blank');
+        });
+    });
+
     // --- Rating System for Enquiry Form ---
-    const ratingContainer = document.querySelector('.rating-stars');
+    const ratingContainer = document.getElementById('enquiry-form').querySelector('.rating-stars');
     let userRating = 0;
 
-    // Create 5 star icons
     for (let i = 1; i <= 5; i++) {
         const star = document.createElement('i');
-        star.classList.add('far', 'fa-star'); // 'far' is for an empty star icon
+        star.classList.add('far', 'fa-star');
         star.dataset.rating = i;
         ratingContainer.appendChild(star);
     }
 
-    // Add click and hover events to stars
     ratingContainer.addEventListener('mouseover', (event) => {
         const stars = ratingContainer.querySelectorAll('i');
         const hoverRating = event.target.dataset.rating;
         stars.forEach(star => {
-            star.classList.remove('fas'); // 'fas' is for a filled star icon
+            star.classList.remove('fas');
             if (star.dataset.rating <= hoverRating) {
                 star.classList.add('fas');
             }
@@ -65,13 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Enquiry Form Submission ---
     const enquiryForm = document.getElementById('enquiry-form');
     enquiryForm.addEventListener('submit', (event) => {
-        event.preventDefault(); // Prevents the form from refreshing the page
+        event.preventDefault();
         const name = document.getElementById('feedbackName').value;
         const feedback = document.getElementById('feedbackMessage').value;
 
         if (name && feedback && userRating > 0) {
-            // For a real website, this is where you would send data to a backend.
-            // Here, we'll simulate a successful submission with a message.
             alert(`Thank you for your feedback, ${name}!\nYou rated us ${userRating} stars.\nYour message: "${feedback}"`);
             enquiryForm.reset();
             userRating = 0;
@@ -85,14 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Contact Form Submission ---
     const contactForm = document.getElementById('contact-form');
     contactForm.addEventListener('submit', (event) => {
-        event.preventDefault(); // Prevents the form from refreshing the page
+        event.preventDefault();
         const name = document.getElementById('name').value;
         const mobile = document.getElementById('mobile').value;
         const email = document.getElementById('email').value;
         const message = document.getElementById('message').value;
 
         if (name && mobile && email && message) {
-            // Simulate sending the message
             alert(`Message Sent!\n\nName: ${name}\nMobile: ${mobile}\nEmail: ${email}\nMessage: "${message}"`);
             contactForm.reset();
         } else {
